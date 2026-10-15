@@ -8,7 +8,8 @@ import mujoco
 import mujoco.viewer
 
 from berkeley_humanoid_lite_lowlevel.policy.config import Cfg
-from berkeley_humanoid_lite_lowlevel.policy.gamepad import Se2Gamepad
+#from berkeley_humanoid_lite_lowlevel.policy.gamepad import Se2Gamepad
+from berkeley_humanoid_lite_lowlevel.policy.keyboard import Se2Keyboard
 
 
 def quat_rotate_inverse(q: torch.Tensor, v: torch.Tensor) -> torch.Tensor:
@@ -137,7 +138,8 @@ class MujocoSimulator(MujocoEnv):
         self.command_velocity_yaw = 0.0
 
         # Start joystick thread
-        self.command_controller = Se2Gamepad()
+        #self.command_controller = Se2Gamepad()
+        self.command_controller = Se2Keyboard()
         self.command_controller.run()
 
     def reset(self) -> torch.Tensor:
@@ -262,8 +264,11 @@ class MujocoSimulator(MujocoEnv):
         """
         command_mode_switch = self.command_controller.commands["mode_switch"]
         command_velocity_x = self.command_controller.commands["velocity_x"]
+        #command_velocity_x = 0.3
         command_velocity_y = self.command_controller.commands["velocity_y"]
+        #command_velocity_y = 0.1
         command_velocity_yaw = self.command_controller.commands["velocity_yaw"]
+        #command_velocity_yaw = 0.2
 
         if command_mode_switch != 0:
             self.mode = command_mode_switch
